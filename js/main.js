@@ -10,6 +10,16 @@ Vue.component('product-review', {
   </ul>
  </p>
  
+ <div id="v-model-radiobutton" class="yes_no">
+ <p>Would you recommend this product?</p>
+   <input type="radio" id="Yes" value="Yes" name="radio" v-model="radio" />
+   <label for="Yes">Yes</label>
+ <br>
+   <input type="radio" id="No" value="No" name="v" v-model="radio" />
+   <label for="No">No</label>
+ 
+ </div>
+
   <p>
     <label for="name">Name:</label>
     <input id="name" v-model="name" placeholder="name">
@@ -34,6 +44,7 @@ Vue.component('product-review', {
   <p>
     <input type="submit" value="Submit"> 
   </p>
+  
  
  </form>
   `,
@@ -42,28 +53,32 @@ Vue.component('product-review', {
             name: null,
             review: null,
             rating: null,
-            errors: []
+            errors: [],
+            radio: '',
         }
     },
-    methods:{
+    methods: {
         onSubmit() {
-            if(this.name && this.review && this.rating) {
+            if(this.name && this.review && this.rating && this.radio) {
                 let productReview = {
                     name: this.name,
                     review: this.review,
-                    rating: this.rating
+                    rating: this.rating,
+                    radio: this.radio,
                 }
-                this.$emit('review-submitted', productReview)
+                eventBus.$emit('review-submitted', productReview)
                 this.name = null
                 this.review = null
                 this.rating = null
+                this.radio = null
             } else {
                 if(!this.name) this.errors.push("Name required.")
                 if(!this.review) this.errors.push("Review required.")
                 if(!this.rating) this.errors.push("Rating required.")
+                if(!this.radio) this.errors.push("Radio required.")
             }
-        }
-    }
+        },
+    },
  })
  
 
