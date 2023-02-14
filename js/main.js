@@ -1,4 +1,5 @@
-Vue.component('product-review', {
+Vue.component('product-review', 
+{
     template: `
  
  <form class="review-form" @submit.prevent="onSubmit">
@@ -48,7 +49,8 @@ Vue.component('product-review', {
  
  </form>
   `,
-    data() {
+    data() 
+    {
         return {
             name: null,
             review: null,
@@ -57,10 +59,14 @@ Vue.component('product-review', {
             radio: '',
         }
     },
-    methods: {
-        onSubmit() {
-            if(this.name && this.review && this.rating && this.radio) {
-                let productReview = {
+    methods: 
+    {
+        onSubmit() 
+        {
+            if(this.name && this.review && this.rating && this.radio) 
+            {
+                let productReview = 
+                {
                     name: this.name,
                     review: this.review,
                     rating: this.rating,
@@ -71,7 +77,9 @@ Vue.component('product-review', {
                 this.review = null
                 this.rating = null
                 this.radio = null
-            } else {
+            } 
+            else 
+            {
                 if(!this.name) this.errors.push("Name required.")
                 if(!this.review) this.errors.push("Review required.")
                 if(!this.rating) this.errors.push("Rating required.")
@@ -80,6 +88,79 @@ Vue.component('product-review', {
         },
     },
  })
+ 
+ Vue.component('product-tabs', 
+ {
+    template: `
+     <div>   
+       <ul>
+         <span class="tab"
+               :class="{ activeTab: selectedTab === tab }"
+               v-for="(tab, index) in tabs"
+               @click="selectedTab = tab"
+         >{{ tab }}</span>
+       </ul>
+       <div v-show="selectedTab === 'Reviews'">
+          <h2>Reviews</h2>
+         <p v-if="!reviews.length">There are no reviews yet.</p>
+         <ul>
+           <li v-for="review in reviews">
+              <p>Name: {{ review.name }}</p>
+              <p>Rating: {{ review.rating }}</p>
+              <p>Review: {{ review.review }}</p>
+              <p>Radio: {{ review.radio }}</p>
+           </li>
+         </ul>
+       </div>
+       <div v-show="selectedTab === 'Make a Review'">
+        <product-review></product-review>
+       </div>
+       <div v-show="selectedTab === 'Shipping'">
+            <p>Shipping: {{ shipping }}</p>
+        </div>
+
+        <div v-show="selectedTab === 'Details'">
+            <product-details/>
+        </div>
+     </div>
+     
+`,
+    data() 
+    {
+        return {
+            tabs: ['Reviews', 'Make a Review', 'Shipping', 'Details'],
+            selectedTab: 'Reviews'  // устанавливается с помощью @click
+        }
+    },
+    props: 
+    {
+
+        reviews: 
+        {
+            type: Array,
+            required: false,
+        },
+
+        premium: 
+        {
+            type: Boolean,
+            required: true
+        }
+    },
+    computed: 
+    {
+        shipping() 
+        {
+            if (this.premium) 
+            {
+                return "Free";
+            } else 
+            {
+                return 2.99
+            }
+        }
+    }
+})
  
 
 Vue.component('product-details', {
@@ -119,7 +200,6 @@ Vue.component('product',
        <p v-else :class="{ disabledButton: !inStock }">Out of Stock</p>
        <span v-show="onSale">{{ sale }}</span>
        <p>User is premium: {{ premium }}</p>
-       <p>Shipping: {{ shipping }}</p>
  
        <div
           class="color-box"
@@ -141,17 +221,7 @@ Vue.component('product',
        <button @click="deleteCart">Delete cart</button>  
     </div>
     <a :href="link">More products like this</a>
-    <div>
-       <h2>Reviews</h2>
-       <p v-if="!reviews.length">There are no reviews yet.</p>
-       <ul>
-          <li v-for="review in reviews">
-             <p>{{ review.name }}</p>
-             <p>Rating: {{ review.rating }}</p>
-             <p>{{ review.review }}</p>
-          </li>
-       </ul>
-    </div> 
+    <product-tabs :premium="premium" :reviews="reviews"></product-tabs>
  </div>
 `,
     data() 
