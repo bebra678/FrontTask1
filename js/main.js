@@ -44,16 +44,13 @@ Vue.component('product',
             ></div>
             <div class="sizes" v-for="el in sizes">
                 <p><pre>{{ el }} </pre></p>
-            </div>         
-            <div class="cart">
-                <p>Cart({{ cart }})</p>
-            </div>           
+            </div><br> 
             <button
                 v-on:click="addToCart"
                 :disabled="!inStock"
                 :class="{ disabledButton: !inStock }"
             >Add to cart</button>
-            <button v-on:click="deleteCart">Delete cart</button>                  
+            <button @click="deleteCart">Delete cart</button>                 
         </div>
     </div>
         <a :href="link">More products like this</a>
@@ -94,20 +91,15 @@ Vue.component('product',
     {
         addToCart() 
         {
-            this.cart += 1
-        },
-        updateProduct(index) 
-        {
-            this.selectedVariant = index;
-            console.log(index);
-        },
+            this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+        },  
         deleteCart()
         {
-            if(this.cart  > 0)
-            {
-                this.cart  -= 1
-            }
-        }
+            this.$emit('delete-cart', this.variants[this.selectedVariant].variantId);
+        },     
+        updateProduct(index) {
+            this.selectedVariant = index;
+        }, 
     },
     computed: 
     {
@@ -152,11 +144,23 @@ Vue.component('product',
 let app = new Vue
 ({
     el: '#app',
-    data: 
+    data: {
+        premium: true,
+        cart: []
+    },
+    methods: 
     {
-        premium: true
+        updateCart(id) 
+        {
+            this.cart.push(id);
+        },
+        deleteCart()
+        {
+            this.cart.pop();
+        }
     }
-})
+ })
+ 
 
 
 
